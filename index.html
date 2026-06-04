@@ -52,6 +52,100 @@
   .glow.one{width:520px;height:520px;background:#7c5cff;top:-160px;right:-120px}
   .glow.two{width:480px;height:480px;background:#22d3ee;bottom:-200px;left:-160px;opacity:.25}
 
+  /* ===== Космический фон ===== */
+  .space{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+  .star{
+    position:absolute;background:#fff;border-radius:50%;
+    box-shadow:0 0 6px rgba(180,210,255,.7);
+    animation:twinkle var(--dur,3s) ease-in-out infinite;
+    animation-delay:var(--delay,0s);
+  }
+  @keyframes twinkle{0%,100%{opacity:.12;transform:scale(.7)}50%{opacity:1;transform:scale(1.2)}}
+
+  /* падающие звёзды */
+  .meteor{
+    position:absolute;height:2px;width:140px;border-radius:2px;
+    background:linear-gradient(90deg,rgba(255,255,255,0),rgba(200,225,255,.95));
+    filter:drop-shadow(0 0 6px rgba(150,200,255,.85));
+    opacity:0;animation:shoot linear infinite;
+  }
+  @keyframes shoot{
+    0%{opacity:0;transform:rotate(215deg) translateX(0)}
+    8%{opacity:1}
+    55%{opacity:1}
+    100%{opacity:0;transform:rotate(215deg) translateX(760px)}
+  }
+
+  /* комета №1: слева-сверху → вправо, гаснет у правого края */
+  .comet{
+    position:absolute;top:5%;left:-12%;width:7px;height:7px;border-radius:50%;
+    background:#fff;box-shadow:0 0 20px 7px rgba(150,200,255,.9);
+    opacity:0;animation:comet 17s ease-in infinite;
+  }
+  .comet::after{
+    content:"";position:absolute;right:6px;top:50%;transform:translateY(-50%);
+    width:260px;height:3px;border-radius:3px;
+    background:linear-gradient(90deg,rgba(124,92,255,0),rgba(124,92,255,.4),rgba(150,210,255,.9));
+  }
+  @keyframes comet{
+    0%{opacity:0;transform:translate(0,0)}
+    4%{opacity:1}
+    84%{opacity:1}
+    94%{opacity:0}
+    100%{opacity:0;transform:translate(132vw,62vh)}
+  }
+
+  /* комета №2: справа-сверху → влево-вниз, гаснет у левого нижнего края */
+  .comet2{
+    position:absolute;top:3%;right:-12%;width:7px;height:7px;border-radius:50%;
+    background:#fff;box-shadow:0 0 20px 7px rgba(185,160,255,.9);
+    opacity:0;animation:comet2 21s ease-in infinite;animation-delay:9s;
+  }
+  .comet2::after{
+    content:"";position:absolute;left:6px;top:50%;transform:translateY(-50%);
+    width:260px;height:3px;border-radius:3px;
+    background:linear-gradient(90deg,rgba(150,210,255,.9),rgba(124,92,255,.4),rgba(124,92,255,0));
+  }
+  @keyframes comet2{
+    0%{opacity:0;transform:translate(0,0)}
+    4%{opacity:1}
+    84%{opacity:1}
+    94%{opacity:0}
+    100%{opacity:0;transform:translate(-132vw,82vh)}
+  }
+
+  /* летающая тарелка */
+  .ufo{
+    position:absolute;top:16%;left:-14%;font-size:2.1rem;line-height:1;
+    filter:drop-shadow(0 0 14px rgba(124,92,255,.85));
+    opacity:0;animation:ufoFly 24s linear infinite;
+  }
+  @keyframes ufoFly{
+    0%{opacity:0;transform:translate(0,0)}
+    10%{opacity:.95}
+    50%{transform:translate(58vw,-22px)}
+    90%{opacity:.95}
+    100%{opacity:0;transform:translate(130vw,12px)}
+  }
+
+  /* ракета в обратную сторону */
+  .rocket{
+    position:absolute;bottom:14%;right:-14%;font-size:1.9rem;line-height:1;
+    filter:drop-shadow(0 0 12px rgba(34,211,238,.8));
+    opacity:0;animation:rocketFly 30s linear infinite;animation-delay:10s;
+  }
+  @keyframes rocketFly{
+    0%{opacity:0;transform:translate(0,0) rotate(-35deg)}
+    12%{opacity:.95}
+    88%{opacity:.95}
+    100%{opacity:0;transform:translate(-135vw,-30vh) rotate(-35deg)}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .star,.meteor,.comet,.comet2,.ufo,.rocket{animation:none;opacity:.5}
+    .meteor,.comet,.comet2,.ufo,.rocket{display:none}
+  }
+
   /* Hero */
   header{position:relative;z-index:1;padding:70px 0 90px;text-align:center}
   .nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:90px}
@@ -128,6 +222,28 @@
   .quote .author .meta b{display:block}
   .quote .author .meta span{color:var(--muted);font-size:.9rem}
 
+  /* Лента отзывов (бегущая справа налево) */
+  .quote-carousel{
+    position:relative;overflow:hidden;
+    -webkit-mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+            mask:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);
+  }
+  .quote-track{display:flex;width:max-content;animation:marquee 48s linear infinite}
+  .quote-carousel:hover .quote-track{animation-play-state:paused}
+  .quote-track .quote{
+    flex:0 0 auto;width:clamp(280px,78vw,360px);margin:0 22px 0 0;
+    padding:34px 30px;text-align:left;
+  }
+  .quote-track .quote::before{font-size:7rem;top:-14px;left:18px}
+  .quote-track .quote blockquote{font-size:1.02rem;font-family:'Manrope',sans-serif;font-weight:500;line-height:1.55}
+  .quote-track .quote .author{justify-content:flex-start}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+  @media (prefers-reduced-motion: reduce){
+    .quote-track{animation:none}
+    .quote-carousel{overflow-x:auto}
+  }
+
   /* CTA */
   .cta-final{text-align:center;padding:90px 0}
   .cta-box{
@@ -168,6 +284,17 @@
 
 <div class="glow one"></div>
 <div class="glow two"></div>
+
+<div class="space" id="space" aria-hidden="true">
+  <span class="meteor" style="top:-4%;left:70%;animation-duration:6s;animation-delay:1s"></span>
+  <span class="meteor" style="top:2%;left:88%;animation-duration:8s;animation-delay:4s"></span>
+  <span class="meteor" style="top:-6%;left:55%;animation-duration:7s;animation-delay:9s"></span>
+  <span class="meteor" style="top:8%;left:78%;animation-duration:9s;animation-delay:13s"></span>
+  <span class="comet"></span>
+  <span class="comet2"></span>
+  <span class="ufo">🛸</span>
+  <span class="rocket">🚀</span>
+</div>
 
 <header>
   <div class="wrap">
@@ -245,15 +372,73 @@
 
 <section id="testimonial">
   <div class="wrap">
-    <div class="quote">
-      <div class="stars">★★★★★</div>
-      <blockquote>«Раньше мы теряли заявки по ночам и в выходные. Владимир собрал нам ИИ-бота, который отвечает клиентам мгновенно и сам доводит их до покупки. За первый месяц закрытых заявок стало заметно больше, а команда наконец перестала тонуть в однотипных вопросах.»</blockquote>
-      <div class="author">
-        <div class="ava-sm">АК</div>
-        <div class="meta">
-          <b>Алексей Кузнецов</b>
-          <span>основатель онлайн-школы</span>
+    <div class="features-head">
+      <div class="eyebrow">Отзывы</div>
+      <h2 class="sec-title">Что говорят клиенты</h2>
+    </div>
+    <div class="quote-carousel" id="quoteCarousel">
+      <div class="quote-track" id="quoteTrack">
+
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <blockquote>«Раньше мы теряли заявки по ночам и в выходные. Владимир собрал нам ИИ-бота, который отвечает клиентам мгновенно и сам доводит их до покупки. За первый месяц закрытых заявок стало заметно больше, а команда наконец перестала тонуть в однотипных вопросах.»</blockquote>
+          <div class="author">
+            <div class="ava-sm">АК</div>
+            <div class="meta">
+              <b>Алексей Кузнецов</b>
+              <span>основатель онлайн-школы</span>
+            </div>
+          </div>
         </div>
+
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <blockquote>«Бот консультирует покупателей и оформляет заказы круглосуточно — даже пока я сплю. Конверсия в магазине выросла, а возвратов и недопониманий стало меньше: клиент сразу получает точный ответ. Это как нанять идеального продавца, который никогда не устаёт.»</blockquote>
+          <div class="author">
+            <div class="ava-sm">МС</div>
+            <div class="meta">
+              <b>Марина Соколова</b>
+              <span>владелица интернет-магазина</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <blockquote>«ИИ-агент сам обрабатывает входящие заявки, отсекает нецелевые и передаёт менеджерам только тёплых клиентов. Команда перестала тратить часы на пустые звонки и работает на результат. Окупился буквально за пару недель.»</blockquote>
+          <div class="author">
+            <div class="ava-sm">ДО</div>
+            <div class="meta">
+              <b>Дмитрий Орлов</b>
+              <span>руководитель агентства недвижимости</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <blockquote>«Бот записывает пациентов на приём, подтверждает визиты и вежливо напоминает о них. Количество неявок заметно снизилось, а администраторы наконец занимаются людьми в клинике, а не бесконечным телефоном. Очень довольны результатом.»</blockquote>
+          <div class="author">
+            <div class="ava-sm">ЕВ</div>
+            <div class="meta">
+              <b>Екатерина Власова</b>
+              <span>директор стоматологии</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote">
+          <div class="stars">★★★★★</div>
+          <blockquote>«Запустили чат-бота для приёма заказов и ответов на вопросы — операторы разгрузились в разы. Клиенты получают ответ за секунды в любое время суток, а мы экономим на расширении поддержки. Владимир всё сделал быстро и понятно, без лишних терминов.»</blockquote>
+          <div class="author">
+            <div class="ava-sm">ИЛ</div>
+            <div class="meta">
+              <b>Игорь Левин</b>
+              <span>основатель службы доставки</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -281,6 +466,41 @@
     © 2026 Vladimir Radchenko · Эксперт по чат-ботам и ИИ
   </div>
 </footer>
+
+<script>
+  // Генерируем мерцающие звёзды
+  (function(){
+    var space = document.getElementById('space');
+    if(!space) return;
+    var count = window.innerWidth < 600 ? 55 : 95;
+    var frag = document.createDocumentFragment();
+    for(var i=0;i<count;i++){
+      var s = document.createElement('span');
+      s.className = 'star';
+      var size = (Math.random()*2 + 1).toFixed(2);   // 1–3px
+      s.style.width = size + 'px';
+      s.style.height = size + 'px';
+      s.style.left = (Math.random()*100).toFixed(2) + '%';
+      s.style.top = (Math.random()*100).toFixed(2) + '%';
+      s.style.setProperty('--dur', (Math.random()*3 + 2).toFixed(2) + 's');
+      s.style.setProperty('--delay', (Math.random()*6).toFixed(2) + 's');
+      frag.appendChild(s);
+    }
+    space.appendChild(frag);
+  })();
+
+  // Лента отзывов: дублируем карточки для бесшовной прокрутки справа налево
+  (function(){
+    var track = document.getElementById('quoteTrack');
+    if(!track) return;
+    var originals = Array.prototype.slice.call(track.children);
+    originals.forEach(function(node){
+      var clone = node.cloneNode(true);
+      clone.setAttribute('aria-hidden', 'true');
+      track.appendChild(clone);
+    });
+  })();
+</script>
 
 </body>
 </html>
